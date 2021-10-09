@@ -1,0 +1,126 @@
+-- Configuração do Debugger no Vscode para o Adonis
+launch.json
+{
+  "name": "Debug",
+  "runtimeExecutable": "npm" || "yarn",
+  "runtimeArgs": ["run", "debug"],
+  "port": 9229,
+  "internalConsoleOptions": "neverOpen"
+}
+
+package.json
+scripts: {
+  "debug": "adonis serve --dev --debug"
+}
+
+-- Iniciando o desenvolvimento do projeto
+
+    1 - Iremos configurar o exception rundlers para tratarmos nossas exceptions
+          adonis make:ehandler
+
+    2 - Após o adonis criar nossa pasta de Exceptions com o arquivo Handler.js
+        Iremos configurar nossos logs, para o adonis fazer o report dos erros em txt
+        Importaremos o looger - const Logger = use('Logger')
+        Agora dentro do nosso metodo report iremos setar as configurações
+
+    3 - Na pasta config temos todos os arquivos de configurações do projeto
+        No arquivo app.js setar o seguinte
+          transport: 'file',
+          file: {
+                driver: 'file',
+                name: 'ecommerce-realtime',
+                filename: 'ecommerce-error.log',
+                level: 'info'
+              }
+
+    4 - Iremos iniciar o git no projeto
+          git init .
+        Criando nossa branch develop
+          git checkout -b develop
+        Configurando nosso usuário
+          git config --global user.name ''
+          git config --global user.email ''
+        Adicionando a um repositório criado no github
+          git remote add origin git@github.com:alefwhite/AdonisJs_Ecommerce_Realtime.git
+        Fazendo o push para o repositório
+          git push -u origin --all
+
+    5 - Instalação dos pacotes com adonis
+        Envio de emails - adonis install @adonisjs/mail
+        Validação de rotas e formulários - adonis install @adonisjs/validator
+        Websocket - adonis install @adonisjs/websocket
+        Adonis Acl para configuração de permissões em middlewares -
+            adonis install adonis-acl - não funciona
+            yarn add adonis-acl
+        Após a instalação seguir a documentação para incluir as configurações
+        Depois das configurações executar - adonis acl:setup
+          Obs: ROLES = PAPEIS
+        Adonis Bumblebee - Provedor de transformador de API para a estrutura AdonisJs. Esta biblioteca fornece
+        uma camada de apresentação e transformação para saída de dados complexos.
+          adonis install adonis-bumblebee
+          yarn add
+
+    6 - Criação das migrations -> adonis make:migration nome_da_tabela
+
+    7 - Criando um hook para Order
+        adonis make:hook Order
+
+    8 - Criamos nossas factorys agora iremos criar nossos seeders
+        adonis make:seed
+
+    9 - Iremos deletar todas as nossas migrations e pedir para o adonis recrialas
+        adonis migration:refresh
+
+    10 - Rodando nossa seed
+        adonis seed
+
+    11 - Criando a controller de autenticação para aprender a usar namespace na rota
+          adonis make:controller Auth/Auth
+
+          Route.group(() => {
+
+          })
+          .prefix('v1/auth')
+          .namespace('Auth') - Irá buscar em Controllers/Http/Auth
+
+          para verificar as rotas criadas e as rotas nomeadas
+          adonis route:list
+
+    12 - Criando controller do tipo resource
+          adonis make:controller Admin/Category --resource
+          adonis make:controller Admin/Product --resource --type http
+
+    13 - Criando um middleware para paginação
+          adonis make:middleware Pagination
+
+          Depois temos que adiciona-lo no kernel
+            App/Middleware/Pagination
+
+
+    14 - Criando Helpers pasta App criaremos uma pasta Helpers e um arquivo index.js
+
+    15 - No terminal dentro da raiz do projeto podemos usar o adonis repl para testar
+         os helpers ou qualquer outra coisa
+
+    16 - Incluimos middlewares de autenticação e acl nas rotas
+        .middleware(['guest'])
+        .middleware(['auth', 'is: (admin || manager'])
+
+    17 - Segurança com validator
+         adonis make:validator Auth/Auth
+
+    18 - Incluindo validator nas rotas
+        .validator('Auth/Login')
+
+    19 - Incluindo validator em rotas resource
+        .validator(new Map([
+          [['users.store'], ['Admin/StoreUser']]
+        ]))
+
+    20 - Transformer - Utilizaremos para retornar a url das imagens dos produtos
+         Adonis Bumblebee - Provedor de transformador de API para a estrutura AdonisJs. Esta biblioteca fornece
+         uma camada de apresentação e transformação para saída de dados complexos.
+         adonis install adonis-bumblebee
+
+         Criando um Transformer
+         adonis make:transformer Admin/Category
