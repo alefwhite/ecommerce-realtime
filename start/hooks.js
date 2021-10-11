@@ -24,5 +24,7 @@ hooks.after.providersBooted(() => {
     }
   }
 
+  Database.on('query', console.log)
+
   Validator.extend('exists', existsFn)
 })
